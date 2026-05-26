@@ -36,12 +36,22 @@ function formatPrice(raw: unknown): string {
   return `$${Math.floor(value).toLocaleString('es-AR')}`;
 }
 
-function buildImageUrlFromCode(rawCode: unknown): string {
-  const code = String(rawCode ?? '').trim();
-  if (!code) return '';
+function normalizeImageName(value: string): string {
+  return value
+    .replace(/[ñÑ]/g, '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+}
 
-  // Ruta requerida: public/imagenesProductos/{codigo}.jpg
-  return `/imagenesProductos/${encodeURIComponent(code)}.jpg`;
+function buildImageUrl(rawCode: unknown, rawName: unknown): string {
+  const code = String(rawCode ?? '').trim();
+  const name = String(rawName ?? '').trim();
+  if (!code || !name) return '';
+
+  // Ruta requerida: public/imagenesProductos/{codigo}-{denominacion-normalizada}.jpg
+  return `/imagenesProductos/${encodeURIComponent(`${code}-${normalizeImageName(name)}.jpg`)}`;
 }
 
 function normalizeHeader(header: string): string {
@@ -133,7 +143,10 @@ export function useExcel(): UseExcelReturn {
             gramaje: formatGramaje(pick(row, ['gramaje', 'Gramaje'])),
             priceUnit: formatPrice(pick(row, ['Precio por unidad', 'Precio por u', 'Precio unidad'])),
             priceBulk: formatPrice(pick(row, ['Precio por bulto', 'Precio bulto'])),
-            imageUrl: buildImageUrlFromCode(pick(row, ['Código', 'Codigo'])),
+            imageUrl: buildImageUrl(
+              pick(row, ['Código', 'Codigo']),
+              pick(row, ['Denominación', 'Denominacion'])
+            ),
             unitsPerBulk: formatUnitsPerBulk(pick(row, ['Unidades por bulto', 'Unidades por bul', 'Unidades'])),
             bulkLabel: formatPlainText(
               pick(row, [
