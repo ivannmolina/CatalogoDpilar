@@ -44,12 +44,41 @@ function buildImageUrlFromCode(rawCode: unknown): string {
   return `/imagenesProductos/${encodeURIComponent(code)}.jpg`;
 }
 
+function normalizeHeader(header: string): string {
+  return header
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLowerCase();
+}
+
 function pick(row: Record<string, unknown>, keys: string[]): unknown {
+  const normalizedRow = new Map<string, unknown>();
+
+  Object.entries(row).forEach(([key, value]) => {
+    normalizedRow.set(normalizeHeader(key), value);
+  });
+
   for (const key of keys) {
-    const value = row[key];
+    const value = row[key] ?? normalizedRow.get(normalizeHeader(key));
     if (value !== undefined && value !== null && String(value).trim() !== '') return value;
   }
   return '';
+}
+
+function formatPlainText(raw: unknown): string {
+  if (raw === '' || raw === null || raw === undefined) return '';
+  return String(raw).replace(/\s+/g, ' ').trim();
+}
+
+function formatGramaje(raw: unknown): string {
+  const value = formatPlainText(raw);
+  if (!value) return '';
+
+  return value
+    .replace(/^x\s*/i, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function formatUnitsPerBulk(raw: unknown): string {
@@ -101,10 +130,19 @@ export function useExcel(): UseExcelReturn {
           .map((row) => ({
             code: String(pick(row, ['Código', 'Codigo'])).trim(),
             name: String(pick(row, ['Denominación', 'Denominacion'])).trim(),
+            gramaje: formatGramaje(pick(row, ['gramaje', 'Gramaje'])),
             priceUnit: formatPrice(pick(row, ['Precio por unidad', 'Precio por u', 'Precio unidad'])),
             priceBulk: formatPrice(pick(row, ['Precio por bulto', 'Precio bulto'])),
             imageUrl: buildImageUrlFromCode(pick(row, ['Código', 'Codigo'])),
             unitsPerBulk: formatUnitsPerBulk(pick(row, ['Unidades por bulto', 'Unidades por bul', 'Unidades'])),
+            bulkLabel: formatPlainText(
+              pick(row, [
+                'Comentario etiquetaxbulto',
+                'etiquetaxbulto',
+                'Etiqueta x bulto',
+                'Etiqueta por bulto',
+              ])
+            ),
           }));
 
         setProducts(parsed);

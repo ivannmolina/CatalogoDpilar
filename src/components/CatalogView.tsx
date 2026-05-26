@@ -20,10 +20,8 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ products, onRenderProg
 
   useEffect(() => {
     let cancelled = false;
+    let frameId = 0;
     const total = products.length;
-
-    setRenderedCount(0);
-    onRenderProgress?.(0, total);
 
     const BATCH_SIZE = 8;
 
@@ -35,17 +33,24 @@ export const CatalogView: React.FC<CatalogViewProps> = ({ products, onRenderProg
         onRenderProgress?.(next, total);
 
         if (next < total) {
-          requestAnimationFrame(step);
+          frameId = requestAnimationFrame(step);
         }
 
         return next;
       });
     };
 
-    requestAnimationFrame(step);
+    frameId = requestAnimationFrame(() => {
+      if (cancelled) return;
+
+      setRenderedCount(0);
+      onRenderProgress?.(0, total);
+      step();
+    });
 
     return () => {
       cancelled = true;
+      cancelAnimationFrame(frameId);
     };
   }, [products, onRenderProgress]);
 

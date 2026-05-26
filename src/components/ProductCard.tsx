@@ -17,40 +17,49 @@ function getTitleSizeClass(title: string): string {
   return '';
 }
 
-function getGramaje(name: string): string {
-  const text = name.toUpperCase();
+const GRAMAJE_PATTERN = /(?:^|\s)(?:\d+\s*[Xx]\s*)?[Xx]?\s*\d+(?:[,.]\d+)?\s*(?:KG|KGS|G|GR|GRS|ML|L|LT|LTS|CC|U|UN|UND|UNID)\b/gi;
 
-  const match = text.match(
-    /(?:^|\s)(?:\d+\s*[Xx]\s*)?[Xx]?\s*(\d+(?:[,.]\d+)?)\s*(KG|KGS|G|GR|GRS|ML|L|LT|LTS|CC|U|UN|UND|UNID)\b/i
-  );
-  if (!match) return '';
-
-  const value = match[1].replace(',', '.');
-  const unitMap: Record<string, string> = {
-    KG: 'kg',
-    KGS: 'kg',
-    G: 'g',
-    GR: 'g',
-    GRS: 'g',
-    ML: 'ml',
-    L: 'l',
-    LT: 'l',
-    LTS: 'l',
-    CC: 'cc',
-    U: 'u',
-    UN: 'u',
-    UND: 'u',
-    UNID: 'u',
-  };
-
-  return `x ${value} ${unitMap[match[2].toUpperCase()] ?? match[2].toLowerCase()}`;
+function normalizeForCompare(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^A-Z0-9]+/gi, ' ')
+    .trim()
+    .toUpperCase();
 }
 
-function removeGramajeFromName(name: string): string {
-  return name
-    .replace(/(?:^|\s)(?:\d+\s*[Xx]\s*)?[Xx]?\s*\d+(?:[,.]\d+)?\s*(KG|KGS|G|GR|GRS|ML|L|LT|LTS|CC|U|UN|UND|UNID)\b/gi, '')
+function cleanGramaje(gramaje: string): string {
+  return gramaje.replace(/^x\s*/i, '').replace(/\s+/g, ' ').trim();
+}
+
+function buildSubtitle(name: string, mainTitle: string, gramaje: string): string {
+  const normalizedTitle = normalizeForCompare(mainTitle);
+  const normalizedGramaje = normalizeForCompare(gramaje);
+  const [, ...restWords] = name.trim().split(/\s+/);
+
+  const subtitle = restWords
+    .join(' ')
+    .replace(GRAMAJE_PATTERN, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+    .filter((word) => normalizeForCompare(word) !== normalizedTitle)
+    .join(' ')
     .replace(/\s{2,}/g, ' ')
     .trim();
+
+  if (!normalizedGramaje) return subtitle;
+
+  return subtitle
+    .replace(new RegExp(normalizedGramaje.replace(/\s+/g, '\\s+'), 'gi'), ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+function getSubtitleSizeClass(subtitle: string): string {
+  if (subtitle.length >= 44) return 'figma-product-description-xs';
+  if (subtitle.length >= 34) return 'figma-product-description-sm';
+  if (subtitle.length >= 24) return 'figma-product-description-md';
+  return '';
 }
 
 function normalizePrice(price: string): string {
@@ -59,9 +68,13 @@ function normalizePrice(price: string): string {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const mainTitle = useMemo(() => getMainTitle(product.name), [product.name]);
-  const gramaje = useMemo(() => getGramaje(product.name), [product.name]);
-  const displayName = useMemo(() => removeGramajeFromName(product.name), [product.name]);
+  const gramaje = useMemo(() => cleanGramaje(product.gramaje), [product.gramaje]);
+  const displayName = useMemo(
+    () => buildSubtitle(product.name, mainTitle, gramaje),
+    [product.name, mainTitle, gramaje]
+  );
   const titleSizeClass = useMemo(() => getTitleSizeClass(mainTitle), [mainTitle]);
+  const subtitleSizeClass = useMemo(() => getSubtitleSizeClass(displayName), [displayName]);
   const samePrice =
     normalizePrice(product.priceUnit) !== '' &&
     normalizePrice(product.priceUnit) !== '-' &&
@@ -91,7 +104,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
 
         <div className="figma-subtitle-row">
-          <h2 className="figma-product-description">{displayName}</h2>
+          <h2 className={`figma-product-description ${subtitleSizeClass}`}>{displayName}</h2>
 
           {gramaje && (
             <div className="figma-weight-badge" aria-label={`Gramaje ${gramaje}`}>
@@ -134,7 +147,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="figma-price-title figma-price-title-unit">
             <div className="figma-price-title-bg figma-title-yellow" />
             <div className="figma-price-title-bg figma-title-blue" />
-            <span className="figma-unit-label">X UNIDAD</span>
+            <span className="figma-price-label">UNIDAD</span>
             <span className="figma-unit-line" />
           </div>
         </div>
@@ -148,12 +161,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <div className="figma-price-title figma-price-title-bulk">
               <div className="figma-price-title-bg figma-title-yellow" />
               <div className="figma-price-title-bg figma-title-blue" />
-              <span className="figma-bulk-units">{product.unitsPerBulk}</span>
-              <span className="figma-bulk-label">UNIDADES</span>
+              <span className="figma-price-label">BULTO</span>
+              <span className="figma-unit-line" />
             </div>
           </div>
         )}
       </section>
+
+      {product.bulkLabel && <p className="figma-bulk-note">{product.bulkLabel}</p>}
 
       <img src="/logo/firmaGmail.png" alt="Pilar Distribuidora" className="figma-footer-logo" />
     </article>

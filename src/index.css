@@ -317,14 +317,20 @@ body {
   height: 99px;
   background: url('/logo/etiqueta nombre.png') center / contain no-repeat;
   flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .figma-main-title {
   position: absolute;
-  width: 300px;
-  height: 89.47px;
-  left: 36px;
-  top: 4.93px;
+  width: 330px;
+  min-height: 89.47px;
+  left: 25px;
+  top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: 'Lilita One', cursive;
   font-weight: 400;
   font-size: 70px;
@@ -369,7 +375,7 @@ body {
 
 .figma-product-description {
   width: 403.99px;
-  height: 85.53px;
+  min-height: 85.53px;
   font-family: 'Lilita One', cursive;
   font-weight: 400;
   font-size: 36px;
@@ -380,12 +386,26 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
   font-smooth: always;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
   text-transform: uppercase;
+}
+
+.figma-product-description-md {
+  font-size: 34px;
+  line-height: 38px;
+}
+
+.figma-product-description-sm {
+  font-size: 30px;
+  line-height: 34px;
+}
+
+.figma-product-description-xs {
+  font-size: 26px;
+  line-height: 30px;
 }
 
 .figma-weight-badge {
@@ -396,6 +416,9 @@ body {
   margin-left: -5px;
   margin-top: -2px;
   z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .figma-weight-bg {
@@ -404,27 +427,27 @@ body {
   height: 77.97px;
   border-radius: 15px;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  transform: rotate(-78deg);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-78deg);
 }
 
 .figma-weight-bg-yellow {
-  left: 3.16px;
-  top: 0;
+  margin-left: 4px;
+  margin-top: -2px;
   background: #F2B002;
 }
 
 .figma-weight-bg-blue {
-  left: 0;
-  top: 2.08px;
   background: #031A4C;
 }
 
 .figma-weight-text {
   position: absolute;
-  width: 72px;
-  height: 36px;
-  left: 4px;
-  top: 18px;
+  width: 76px;
+  height: 31.15px;
+  left: 50%;
+  top: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -433,7 +456,7 @@ body {
   line-height: 24px;
   text-align: center;
   color: #ffffff;
-  transform: rotate(12deg);
+  transform: translate(-50%, -50%) rotate(12deg);
   white-space: nowrap;
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
@@ -557,11 +580,11 @@ body {
 }
 
 .figma-price-title-bulk {
-  width: 118px;
-  height: 90px;
-  left: 91px;
+  width: 120px;
+  height: 78px;
+  left: 86px;
   top: 34px;
-  transform: rotate(12deg);
+  transform: rotate(13deg);
   z-index: 1;
 }
 
@@ -579,7 +602,7 @@ body {
 
 .figma-price-title-bulk .figma-price-title-bg {
   width: 112px;
-  height: 82px;
+  height: 68px;
   transform: none;
 }
 
@@ -605,15 +628,15 @@ body {
   top: 3px;
 }
 
-.figma-unit-label {
+.figma-price-label {
   position: absolute;
   width: 100px;
   height: 28px;
   left: 6px;
   top: 15px;
   font-family: 'Lilita One', cursive;
-  font-size: 22px;
-  line-height: 25px;
+  font-size: 24px;
+  line-height: 27px;
   text-align: center;
   color: #ffffff;
   white-space: nowrap;
@@ -630,36 +653,17 @@ body {
   z-index: 2;
 }
 
-.figma-bulk-units {
-  position: absolute;
-  width: 102px;
-  height: 44px;
-  left: 5px;
-  top: 4px;
+.figma-bulk-note {
+  width: 335px;
+  min-height: 18px;
+  margin-top: -7px;
   font-family: 'Lilita One', cursive;
-  font-size: 42px;
-  line-height: 46px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 18px;
   text-align: center;
-  color: #ffffff;
-  white-space: nowrap;
-  overflow: hidden;
-  z-index: 2;
-}
-
-.figma-bulk-label {
-  position: absolute;
-  width: 102px;
-  height: 27px;
-  left: 5px;
-  top: 48px;
-  font-family: 'Lilita One', cursive;
-  font-size: 21px;
-  line-height: 27px;
-  text-align: center;
-  color: #F2B002;
-  white-space: nowrap;
-  overflow: hidden;
-  z-index: 2;
+  color: #B80000;
+  flex: none;
 }
 
 .figma-footer-logo {
