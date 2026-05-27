@@ -11,7 +11,7 @@ const PRODUCTS_PER_PAGE = 1;
 
 const CoverPage: React.FC = () => (
   <div className="catalog-page cover-page">
-    <img src="/logo/Portada.png" alt="Portada catálogo" className="cover-image" />
+    <img src="/logo/PortadaConNumero.jpg" alt="Portada catálogo" className="cover-image" />
   </div>
 );
 

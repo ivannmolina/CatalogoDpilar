@@ -361,6 +361,12 @@ body {
   line-height: 62px;
 }
 
+.figma-main-title-xxl {
+  font-size: 39px;
+  line-height: 52px;
+  letter-spacing: -0.5px;
+}
+
 .figma-subtitle-row {
   position: absolute;
   width: 516px;
@@ -406,6 +412,11 @@ body {
 .figma-product-description-xs {
   font-size: 26px;
   line-height: 30px;
+}
+
+.figma-product-description-xxs {
+  font-size: 22px;
+  line-height: 26px;
 }
 
 .figma-weight-badge {
@@ -463,8 +474,8 @@ body {
 }
 
 .figma-image-frame {
-  width: 500px;
-  height: 325px;
+  width: 540px;
+  height: 350px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -472,31 +483,44 @@ body {
 }
 
 .figma-product-image {
-  width: 500px;
-  height: 325px;
+  width: 540px;
+  height: 350px;
   object-fit: contain;
   display: block;
 }
 
 .figma-product-placeholder {
-  width: 500px;
-  height: 325px;
+  width: 540px;
+  height: 350px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #9ca3af;
-  background: #f3f4f6;
-  font-family: 'DM Sans', sans-serif;
+  gap: 12px;
+  color: #031A4C;
+  background: #ffffff;
+  font-family: 'Lilita One', cursive;
+  font-size: 28px;
+  line-height: 32px;
+  text-align: center;
+  text-transform: uppercase;
   border-radius: 8px;
+}
+
+.figma-placeholder-logo {
+  width: 150px;
+  height: 80px;
+  object-fit: contain;
+  opacity: 0.9;
 }
 
 .figma-code-badge {
   width: 164px;
-  height: 31px;
+  height: 22px;
   font-family: 'Lilita One', cursive;
   font-weight: 400;
-  font-size: 26px;
-  line-height: 30px;
+  font-size: 18px;
+  line-height: 22px;
   text-align: center;
   border: none;
   color: #ffffff;

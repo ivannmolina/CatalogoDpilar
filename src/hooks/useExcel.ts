@@ -51,7 +51,7 @@ function buildImageUrl(rawCode: unknown, rawName: unknown): string {
   if (!code || !name) return '';
 
   // Ruta requerida: public/imagenesProductos/{codigo}-{denominacion-normalizada}.jpg
-  return `/imagenesProductos/${encodeURIComponent(`${code}-${normalizeImageName(name)}.jpg`)}`;
+  return `/imagenesProductos/${code}-${normalizeImageName(name)}.jpg`;
 }
 
 function normalizeHeader(header: string): string {
