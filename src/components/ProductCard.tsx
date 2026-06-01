@@ -110,6 +110,14 @@ function normalizePrice(price: string): string {
   return price.replace(/\s/g, '').trim();
 }
 
+function withImageExtensions(imageUrl: string): string[] {
+  if (!imageUrl) return [];
+
+  return ['jpg', 'jpeg', 'png', 'webp'].map((extension) =>
+    imageUrl.replace(/\.(jpe?g|png|webp)$/i, `.${extension}`)
+  );
+}
+
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [imageAttempt, setImageAttempt] = useState(0);
   const mainTitle = useMemo(() => getMainTitle(product.name), [product.name]);
@@ -129,10 +137,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     normalizePrice(product.priceUnit) === normalizePrice(product.priceBulk);
   const imageSources = useMemo(
     () => [
-      product.imageUrl,
-      product.imageUrl.replace(/\.jpg$/i, '.png'),
-      `/imagenesProductos/${product.code}.jpg`,
-      `/imagenesProductos/${product.code}.png`,
+      ...withImageExtensions(product.imageUrl),
+      ...withImageExtensions(`/imagenesProductos/${product.code}.jpg`),
     ].filter(Boolean),
     [product.code, product.imageUrl]
   );
