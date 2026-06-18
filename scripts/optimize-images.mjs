@@ -6,12 +6,11 @@ const root = process.cwd();
 const inputDir = path.resolve(root, process.argv[2] ?? 'public/imagenesProductos');
 const outputDir = path.resolve(root, process.argv[3] ?? 'public/imagenesProductos-optimized');
 
-const MAX_WIDTH = Number(process.env.IMAGE_MAX_WIDTH ?? 1200);
-const MAX_HEIGHT = Number(process.env.IMAGE_MAX_HEIGHT ?? 1200);
-const JPEG_QUALITY = Number(process.env.IMAGE_JPEG_QUALITY ?? 76);
-const WEBP_QUALITY = Number(process.env.IMAGE_WEBP_QUALITY ?? 78);
+const MAX_WIDTH = Number(process.env.IMAGE_MAX_WIDTH ?? 1000);   // Tu opción intermedia
+const MAX_HEIGHT = Number(process.env.IMAGE_MAX_HEIGHT ?? 1000);
+const JPEG_QUALITY = Number(process.env.IMAGE_JPEG_QUALITY ?? 71); // Bajamos sutilmente de 76 a 71
+const WEBP_QUALITY = Number(process.env.IMAGE_WEBP_QUALITY ?? 73); // Bajamos sutilmente de 78 a 73
 const PNG_COMPRESSION_LEVEL = Number(process.env.IMAGE_PNG_COMPRESSION_LEVEL ?? 9);
-
 const supportedExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 
 function formatBytes(bytes) {
